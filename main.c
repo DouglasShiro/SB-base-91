@@ -2,8 +2,6 @@
 //  main.c
 //  base91
 //
-//  Created by Adarley Grando on 12/05/18.
-//
 
 #include <stdio.h>
 
