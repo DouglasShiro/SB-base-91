@@ -5,7 +5,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "ref.h"
 
 typedef enum _bool {
     false = 0,
@@ -15,12 +14,16 @@ typedef enum _bool {
 int procurarTabela91(int);
 char tabela[91] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!' , '#' , '$' , '>' , '?' , '@' , '[' , ']' , '^' , '_' , '`' , '{' , '|' , '}' , '~' , '"' , '%' , '&' , '(' , ')' , '*' , '+' , ',' , '.' , '/' , ':' , ';' , '<' , '='};
 
+void codifica91(FILE*);
+void decodifica91(FILE*);
+int procurarTabela91(int);
+
 int main(int argc, char * argv[]) {
 
-    int c, escolha;
+    int escolha;
     FILE *file;
-	char* instrucao = argv[1];
-	char* filename = argv[2];
+	char* instrucao;
+	char* filename = NULL;
 
 	if ( argc == 1) {
 		do {
@@ -30,49 +33,89 @@ int main(int argc, char * argv[]) {
 			printf("2.Decodificar arquivo binario para base91;\n");
 			printf("3.Sair do programa;\n");
 			scanf("%d", &escolha);
+			if (escolha == 3) {
+				printf("Saindo...\n");
+				return 0;
+			} else if ((escolha < 3) || (escolha > 0)) {
+
+			} else {
+				continue;
+			}
+
+			if (escolha == 1) {
+				printf("Entre com o nome do arquivo a ser codificado:\n");
+				scanf("%s", filename);
+				file = fopen(filename, "r");
+				if ( !file ) {
+					printf("Erro ao abrir arquivo, finalizando...\n");
+					return 0;
+				} else {
+					codifica91(file);
+				}
+			} else if (escolha == 2) {
+				printf("Entre com o nome do arquivo a ser decodificado:\n");
+				scanf("%s", filename);
+				file = fopen(filename, "r");
+				if ( !file ) {
+					printf("Erro ao abrir arquivo, finalizando...\n");
+					return 0;
+				} else {
+					decodifica91(file);
+				}
+			}
 		} while (escolha != 3);
-		if (escolha == 1) {
+	} else if (argc == 3){
+		instrucao = argv[1];
+		filename = argv[2];
 
-		} else if (escolha == 2) {
-
-		} else if (escolha == 3) {
-
-		}
-
-	}
-
-    if (argc != 3) {
-		printf("Erro: numero de parametros para o programa incorreto\n");
-	} else {
 		file = fopen(filename, "r");
+
 		if (!file) {
 			printf("Erro: problema para encontrar arquivo\n");
 		} else {
-
-	        int bufferBase91 = 0;
-	        int y1 = 0, y2 = 0;
-	        while ((c = getc(file)) != EOF){
-	            putchar(c);
-	            if (bufferBase91 == 0) {
-	                //estamos preenchendo o y1 de um novo bloco
-	                y1 = procurarTabela91(c);
-	                //printf(": %d; ", y1);
-	                bufferBase91++;
-	            }
-	            else {
-	                //estamos preenchendo o y2 de um novo bloco
-	                y2 = procurarTabela91(c);
-	                printf("; y1: %d, y2: %d; ", y1, y2);
-	                printf("%d\n", (y1 * 91 + y2));
-	                bufferBase91 = 0;
-	            }
-	        }
+			if ( !strcmp(instrucao, "codificar")) {
+				codifica91(file);
+			} else if ( !strcmp(instrucao, "decodificar")) {
+				decodifica91(file);
+			} else {
+				printf("Erro na leitura dos parametros, informe: \n");
+				printf("codificar ou decodificar + nome_arquivo.ext\n");
+				return 0;
+			}
 	        fclose(file);
 	    }
+	} else {
+		printf("Erro: numero de parametros para o programa incorreto\n");
 	}
 
 
     return 0;
+}
+
+void codifica91(FILE* file) {
+	int c;
+	int bufferBase91 = 0;
+	int y1 = 0, y2 = 0;
+	while ((c = getc(file)) != EOF){
+		putchar(c);
+		if (bufferBase91 == 0) {
+			//estamos preenchendo o y1 de um novo bloco
+			y1 = procurarTabela91(c);
+			//printf(": %d; ", y1);
+			bufferBase91++;
+		}
+		else {
+			//estamos preenchendo o y2 de um novo bloco
+			y2 = procurarTabela91(c);
+			printf("; y1: %d, y2: %d; ", y1, y2);
+			printf("%d\n", (y1 * 91 + y2));
+			bufferBase91 = 0;
+		}
+	}
+}
+
+void decodifica91(FILE* file) {
+	printf("decodificar\n");
 }
 
 int procurarTabela91(int ascii) {
