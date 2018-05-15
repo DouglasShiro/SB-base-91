@@ -18,12 +18,14 @@ void codifica91(FILE*);
 void decodifica91(FILE*);
 int procurarTabela91(int);
 
+void getch(void);
+
 int main(int argc, char * argv[]) {
 
     int escolha;
     FILE *file;
 	char* instrucao;
-	char* filename = NULL;
+	char filename[50];
 
 	if ( argc == 1) {
 		do {
@@ -33,40 +35,58 @@ int main(int argc, char * argv[]) {
 			printf("2.Decodificar arquivo binario para base91;\n");
 			printf("3.Sair do programa;\n");
 			scanf("%d", &escolha);
-			if (escolha == 3) {
-				printf("Saindo...\n");
-				return 0;
-			} else if ((escolha < 3) || (escolha > 0)) {
-
-			} else {
-				continue;
-			}
-
-			if (escolha == 1) {
-				printf("Entre com o nome do arquivo a ser codificado:\n");
+		} while (escolha > 3 || escolha < 0);
+		if (escolha == 3) {
+			printf("Saindo...\n");
+			return 0;
+		} else if (escolha == 1) {
+			while(1) {
+				printf("---------------------------------------------------\n");
+				printf("Entre com o nome do arquivo a ser codificado\n");
+				printf("Escreva exit para nao entrar com novo arquivo\n");
 				scanf("%s", filename);
+				if (!strcmp(filename, "exit")) {
+					printf("Saindo...\n");
+					break;
+				}
 				file = fopen(filename, "r");
-				if ( !file ) {
-					printf("Erro ao abrir arquivo, finalizando...\n");
-					return 0;
+				while (getchar() != '\n');
+				if (!file) {
+					printf("Arquivo nao encontrado!\n");
+					printf("Escreva exit para nao entrar com novo arquivo\n");
 				} else {
 					codifica91(file);
-				}
-			} else if (escolha == 2) {
-				printf("Entre com o nome do arquivo a ser decodificado:\n");
-				scanf("%s", filename);
-				file = fopen(filename, "r");
-				if ( !file ) {
-					printf("Erro ao abrir arquivo, finalizando...\n");
-					return 0;
-				} else {
-					decodifica91(file);
+					printf("Arquivo ");
+					printf("%s", filename);
+					printf(" codificado com sucesso!\n");
 				}
 			}
-		} while (escolha != 3);
-	} else if (argc == 3){
+		} else if (escolha == 2) {
+			while(1) {
+				printf("---------------------------------------------------\n");
+				printf("Entre com o nome do arquivo a ser codificado\n");
+				printf("Escreva exit para nao entrar com novo arquivo\n");
+				scanf("%s", filename);
+				if (!strcmp(filename, "exit")) {
+					printf("Saindo...\n");
+					break;
+				}
+				file = fopen(filename, "r");
+				while (getchar() != '\n');
+				if (!file) {
+					printf("Arquivo nao encontrado!\n");
+					printf("Escreva exit para nao entrar com novo arquivo\n");
+				} else {
+					decodifica91(file);
+					printf("Arquivo ");
+					printf("%s", filename);
+					printf(" codificado com sucesso!\n");
+				}
+			}
+		}
+	} else if (argc > 3) {
 		instrucao = argv[1];
-		filename = argv[2];
+		strcpy(filename, argv[2]);
 
 		file = fopen(filename, "r");
 
@@ -157,4 +177,8 @@ int procurarTabela91(int ascii) {
 
     //nao encontrado
     return -1;
+}
+
+void getch (void) {
+  while ( getchar() != '\n' );
 }
