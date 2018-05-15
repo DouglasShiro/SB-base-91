@@ -84,31 +84,32 @@ int main(int argc, char * argv[]) {
 				}
 			}
 		}
-	} else if (argc > 3) {
+	} else if (argc >= 3) {
 		instrucao = argv[1];
-		strcpy(filename, argv[2]);
+		for (int i = 2; i < argc; i++) {
+			strcpy(filename, argv[i]);
+			file = fopen(filename, "r");
 
-		file = fopen(filename, "r");
-
-		if (!file) {
-			printf("Erro: problema para encontrar arquivo\n");
-		} else {
-			if ( !strcmp(instrucao, "codificar")) {
-				codifica91(file);
+			if (!strcmp(instrucao, "codificar")) {
+				if (!file) {
+					printf("Erro: problema para encontrar arquivo\n");
+				} else {
+					codifica91(file);
+				}
 			} else if ( !strcmp(instrucao, "decodificar")) {
-				decodifica91(file);
-			} else {
-				printf("Erro na leitura dos parametros, informe: \n");
-				printf("codificar ou decodificar + nome_arquivo.ext\n");
-				return 0;
+				if (!file) {
+					printf("Erro: problema para encontrar arquivo\n");
+				} else {
+					decodifica91(file);
+				}
+		    } else {
+				printf("Instrucao nao encontrada\n");
+				break;
 			}
-	        fclose(file);
-	    }
+		}
 	} else {
 		printf("Erro: numero de parametros para o programa incorreto\n");
 	}
-
-
     return 0;
 }
 
